@@ -1,6 +1,8 @@
 use super::routes::{health_check, subscribe};
 use actix_web::{web, App, HttpServer};
 use actix_web::dev::Server;
+use actix_web::web::Data;
+use tracing_actix_web::TracingLogger;
 use sqlx::PgPool;
 use std::net::TcpListener;
 
@@ -15,6 +17,7 @@ pub fn run(
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             // A new entry in our routing table for POST /subscriptions requests
             .route("/subscriptions", web::post().to(subscribe))

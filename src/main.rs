@@ -1,13 +1,19 @@
 use rust2prod_api::startup::{run};
 use rust2prod_api::configuration::get_configuration;
-use sqlx::PgPool;
+use rust2prod_api::telemetry::{get_subscriber, init_subscriber};
+use sqlx::postgres::PgPool;
 use std::net::TcpListener;
+use secrecy::ExposeSecret;
+
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let subscriber = get_subscriber("zero2prod".into(), "info".into(), std::io::stdout);
+    init_subscriber(subscriber);
+    // old logger env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     // Panic if we can't read configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
-    let connection_pool = PgPool::connect(&configuration.database.connection_string())
+    let connection_pool = PgPool::connect(&configuration.database.connection_string().expose_secret())
         .await
         .expect("Failed to connect to Postgres.");
     // Bubble up the io::Error if we failed to bind the address
