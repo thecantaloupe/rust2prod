@@ -5,7 +5,6 @@ use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
 use sqlx::PgPool;
 use std::net::TcpListener;
-use tracing_actix_web::TracingLogger;
 
 // Notice the different signature!
 // We return `Server` on the happy path and we dropped the `async` keyword
