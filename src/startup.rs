@@ -1,7 +1,6 @@
 use super::routes::{health_check, subscribe};
 use actix_web::{web, App, HttpServer};
 use actix_web::dev::Server;
-use actix_web::web::Data;
 use tracing_actix_web::TracingLogger;
 use sqlx::PgPool;
 use std::net::TcpListener;

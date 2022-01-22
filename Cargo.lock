@@ -132,9 +132,9 @@ dependencies = [
 
 [[package]]
 name = "actix-web"
-version = "4.0.0-beta.19"
+version = "4.0.0-beta.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "229d0d2c11d6c734327cf1fbc15dd644b351b440bcb4608349258f5e00605bdc"
+checksum = "aa8ba5081e9f8d0016cf34df516c699198158fd8c77990aa284115b055ead61b"
 dependencies = [
  "actix-codec",
  "actix-http",
@@ -537,6 +537,9 @@ name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
+dependencies = [
+ "serde 1.0.133",
+]
 
 [[package]]
 name = "encoding_rs"
@@ -1456,6 +1459,7 @@ dependencies = [
  "actix-web",
  "chrono",
  "config",
+ "dotenv",
  "once_cell",
  "reqwest",
  "secrecy",
@@ -1607,6 +1611,7 @@ version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c059c05b48c5c0067d4b4b2b4f0732dd65feb52daf7e0ea09cd87e7dadc1af79"
 dependencies = [
+ "indexmap",
  "itoa 1.0.1",
  "ryu",
  "serde 1.0.133",
@@ -1791,9 +1796,12 @@ dependencies = [
  "dotenv",
  "either",
  "heck",
+ "hex",
  "once_cell",
  "proc-macro2",
  "quote",
+ "serde 1.0.133",
+ "serde_json",
  "sha2",
  "sqlx-core",
  "sqlx-rt",
@@ -2037,9 +2045,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-actix-web"
-version = "0.5.0-beta.9"
+version = "0.5.0-beta.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6025a1b13fe88f5a520e0b9caeb962f969093e3f05f567ca3cd02f9391733c01"
+checksum = "f7a869b021f8cdb87c26ac58fa596db601931134cc7e727e9b15ba9f5c295881"
 dependencies = [
  "actix-web",
  "pin-project",
