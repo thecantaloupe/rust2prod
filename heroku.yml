@@ -4,9 +4,6 @@ setup:
     as: rust2prod
 build:
   docker:
-    release:
-       dockerfile: Dockerfile
-       target: builder
     web: Dockerfile
     worker: worker/Dockerfile
 run:
