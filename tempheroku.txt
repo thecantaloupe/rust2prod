@@ -1,0 +1,22 @@
+docker login --username=_ --password=<> registry.heroku.com
+
+docker build -t registry.heroku.com/rusther/web .
+docker push registry.heroku.com/rusther/web
+
+
+Ok, found a working solution. It's Apple M1 that is breaking this standard setup (again) :(
+# replace signingv2 with your own tag
+docker buildx build --platform linux/amd64 -t rusther .
+
+# make sure to use the name of your Heroku app
+docker tag rusther registry.heroku.com/signingv2/web
+
+# use docker push to push it to the Heroku registry
+docker push registry.heroku.com/rusther/web
+
+# then use heroku release to activate
+heroku container:release web -a rusther
+
+
+
+docker buildx build --tag rusther -o type=image --platform=linux/arm64,linux/amd64 .

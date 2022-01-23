@@ -28,6 +28,7 @@ pub struct DatabaseSettings {
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Initialize our configuration reader
     let mut settings = config::Config::default();
+    
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
 
@@ -42,7 +43,6 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .unwrap_or_else(|_| "local".into())
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT.");
-
     // Layer on the environment-specific values.
     settings.merge(
         config::File::from(configuration_directory.join(environment.as_str())).required(true),
@@ -50,9 +50,11 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Add in settings from environment variables (with a prefix of APP and '__' as separator)
     // E.g. `APP_APPLICATION__PORT=5001 would set `Settings.application.port`
     settings.merge(config::Environment::with_prefix("app").separator("__"))?;
+    // settings.merge(
     // Try to convert the configuration values it read into
     // our Settings type
     settings.try_into()
+
 }
 /// The possible runtime environment for our application.
 pub enum Environment {

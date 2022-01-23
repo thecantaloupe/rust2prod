@@ -4,10 +4,16 @@ use rust2prod_api::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
 use std::net::TcpListener;
 use secrecy::ExposeSecret;
+use std::env;
 
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let port: u16 = env::var("PORT")
+        .unwrap_or_else(|_| "8000".to_string())
+        .parse()
+        .expect("PORT must be a number");
+
     let subscriber = get_subscriber("rust2prod_api".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
     // old logger env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
@@ -23,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     // We have removed the hard-coded `8000` - it's now coming from our settings!
     let address = format!(
         "{}:{}",
-        configuration.application.host, configuration.application.port
+        configuration.application.host, port
     );
     let listener = TcpListener::bind(address)?;
     run(listener, connection_pool)?.await
