@@ -4,21 +4,10 @@ use rust2prod_api::telemetry::{get_subscriber, init_subscriber};
 use sqlx::postgres::PgPoolOptions;
 use std::net::TcpListener;
 use secrecy::ExposeSecret;
-use dotenv::dotenv;
-use std::env;
 
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    // heroku and choosing its own dang port
-    let port;
-    dotenv().ok();
-    match env::var("PORT") {
-        Ok(val) => port = val,
-        Err(_e) => port = "none".to_string(),
-    }
-    let u16_port = port.parse::<u16>().unwrap();
-
     let subscriber = get_subscriber("rust2prod_api".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
     // old logger env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
@@ -34,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     // We have removed the hard-coded `8000` - it's now coming from our settings!
     let address = format!(
         "{}:{}",
-        configuration.application.host, u16_port
+        configuration.application.host, configuration.application.port
     );
     let listener = TcpListener::bind(address)?;
     run(listener, connection_pool)?.await
