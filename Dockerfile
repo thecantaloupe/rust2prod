@@ -1,3 +1,5 @@
+## Uses cargo check but mac m1 v of packages didn't play well with generating heoku 
+
 ###########################################
 ## Builder (build binary)
 ###########################################
@@ -28,8 +30,6 @@ RUN cargo build --release --bin rust2prod_api
 ###########################################
 # Runtime stage
 FROM debian:bullseye-slim AS runtime
-# Instead copy the compiled binary from the builder environment 
-# to our runtime environment
 WORKDIR /app
 # Install OpenSSL - it is dynamically linked by some of our dependencies
 RUN apt-get update -y \
@@ -38,6 +38,8 @@ RUN apt-get update -y \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+# Instead copy the compiled binary from the builder environment 
+# to our runtime environment
 COPY --from=builder /app/target/release/rust2prod_api rust2prod_api
 # We need the configuration file at runtime!
 COPY configuration configuration
