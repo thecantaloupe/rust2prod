@@ -11,12 +11,12 @@ pub struct FormData {
 
 #[tracing::instrument(
     name = "Adding a new subscriber",
-    skip(form, pool),
+    skip(form),
     fields(
         // Generate a random unique identifier no longer needed with TracingLogger vs Logger 
         // request_id = %Uuid::new_v4(),
         subscriber_email = %form.email,
-        subscriber_name = %form.name
+        subscriber_name = %form.name,
     )
 )]
 // orchestrates the work to be done by calling the required routines and translates their outcome into the proper response according to the rules and conventions of the HTTP protocol.
