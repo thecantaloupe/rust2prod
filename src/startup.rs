@@ -1,4 +1,5 @@
 use crate::routes::{health_check, subscribe};
+use super::controller;
 use actix_web::{web, App, HttpServer};
 use actix_web::dev::Server;
 use tracing_actix_web::TracingLogger;
@@ -14,12 +15,14 @@ pub fn run(
 ) -> Result<Server, std::io::Error> {
     // Wrap the connection in a smart pointer
     let db_pool = web::Data::new(db_pool);
+    // transfer ownership of the AppState to the HttpServer via the `move`.
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             // A new entry in our routing table for POST /subscriptions requests
             .route("/subscriptions", web::post().to(subscribe))
+            .configure(controller::init_user_controller)
             // Register the connection as part of the application state
             .app_data(db_pool.clone())
     })
