@@ -1,4 +1,4 @@
-use super::routes::{health_check, subscribe};
+use crate::routes::{health_check, subscribe};
 use actix_web::{web, App, HttpServer};
 use actix_web::dev::Server;
 use tracing_actix_web::TracingLogger;

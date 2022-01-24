@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     // Panic if we can't read configuration
     let configuration = get_configuration().expect("Failed to read configuration.");
     // No longer async, given that we don't actually try to connect!
-    let connection_pool = PgPool::connect(&db_name)
+    let connection_pool = PgPool::connect("postgres://sflttqtlbqiifv:261953154ce15754a0d012a9bdc9c39e297f58e1b193dc4b61a7c10764f89833@ec2-3-212-143-188.compute-1.amazonaws.com:5432/da8925uhj0r5it?sslmode=require")
         .await
         .expect("Failed to connect");
     // let connection_pool = PgPoolOptions::new()
