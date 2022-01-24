@@ -8,6 +8,9 @@ use std::env;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    for (n,v) in env::vars_os() {
+        println!("{}: {}", n.into_string().unwrap(), v.into_string().unwrap());
+    }
     let port: u16 = env::var("PORT")
         .unwrap_or_else(|_| "8000".to_string())
         .parse()

@@ -2,4 +2,9 @@
 application:
   host: 0.0.0.0
 database:
+  host: "c2-3-212-143-188.compute-1.amazonaws.com"
+  port: 5432
+  username: "sflttqtlbqiifv"
+  password: "261953154ce15754a0d012a9bdc9c39e297f58e1b193dc4b61a7c10764f89833"
+  database_name: "da8925uhj0r5it"
   require_ssl: true
