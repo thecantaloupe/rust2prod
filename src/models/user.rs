@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
-use sqlx::{PgPool, query_as};
+use sqlx::{PgPool, query_as, postgres::PgRow};
 use chrono::{Utc, DateTime};
+
+use crate::controller::user_controller::UserFormData;
 
 
 
@@ -66,5 +68,40 @@ impl User {
             // We will talk about error handling in depth later!
         })?;
         Ok(rows)
+    }
+    pub async fn update_user_by_id(db_pool: &PgPool, user_id: &str, form: &UserFormData) -> Result<PgRow, sqlx::Error> {
+        let rows = sqlx::query_as!(
+            User,
+            r#"
+        UPDATE users SET name = $2, email= $3
+        WHERE id = $1
+        "#,
+        user_id,
+        form.name,
+        form.email
+        )
+        .fetch_one(db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to execute query: {:?}", e);
+            e
+        })?;
+        Ok(rows)
+    }
+    pub async fn delete_user_by_id(db_pool: &PgPool, user_id: &str) -> Result<(), sqlx::Error> {
+        sqlx::query!(
+            r#"
+        DELETE from users
+        WHERE id = $1
+        "#,
+        user_id
+        )
+        .execute(db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to execute query: {:?}", e);
+            e
+        })?;
+        Ok(())
     }
 }

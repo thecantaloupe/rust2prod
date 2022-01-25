@@ -1,4 +1,4 @@
-use actix_web::{get, post, web, HttpResponse, Responder};
+use actix_web::{get, post, delete, web, HttpResponse, Responder};
 use sqlx::{PgPool, FromRow, Row, Error, postgres::PgRow};
 use uuid::Uuid;
 use chrono::Utc;
@@ -6,8 +6,8 @@ use crate::{models::user::User, constants};
 
 #[derive(serde::Deserialize)]
 pub struct UserFormData {
-    name: String,
-    email: String,
+    pub name: String,
+    pub email: String,
 }
 #[derive(serde::Deserialize)]
 pub struct ResponseBody<T> {
@@ -40,6 +40,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_users);
     cfg.service(get_user);
     cfg.service(post_user);
+    cfg.service(delete_user_by_id);
 }
 
 #[tracing::instrument(name = "Getting all users")]
@@ -62,26 +63,20 @@ async fn get_user(user_id: web::Path<String>, pool: web::Data<PgPool>) -> impl R
         Ok(user) => HttpResponse::Ok().json(user),
     }
 }
-// pub async fn get_user_by_id(pool: &PgPool, user_id: &str) -> Result<(), sqlx::Error> {
-//     let that_boi = sqlx::query!(
-//         r#"
-//     SELECT id, name, email, created_at
-//     FROM users
-//     WHERE id = $1
-//         "#,
-//         user_id
-//     )
-//     .fetch_one(pool)
-//     .await
-//     .map_err(|e| {
-//         tracing::error!("Failed to execute query: {:?}", e);
-//         e
-//         // Using the `?` operator to return early
-//         // if the function failed, returning a sqlx::Error
-//         // We will talk about error handling in depth later!
-//     })?;
-//     Ok(())
-// }
+#[tracing::instrument(name = "Delete a single users",skip(pool),fields(user_id = %user_id,))]
+#[delete("/user/{id}")]
+async fn delete_user_by_id(
+    user_id: web::Path<String>, 
+    pool: web::Data<PgPool>) -> HttpResponse {
+    match User::delete_user_by_id(&pool, &user_id).await {
+        Ok(_) => {
+            HttpResponse::Ok().finish()
+        },
+        Err(_) => {
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}
 
 #[tracing::instrument(name = "Adding a new user",skip(form),fields(user_name = %form.name,user_email = %form.email,))]
 #[post("/user")]
