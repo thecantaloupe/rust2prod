@@ -1,5 +1,60 @@
 {
   "db": "PostgreSQL",
+  "01f31d8b12ec043752bd262956edeaf750984fed3770ad5b885f1aa5a784a9e1": {
+    "query": "\n    INSERT INTO users (id, name, email, created_at)\n    VALUES ($1, $2, $3, $4)\n            ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Text",
+          "Timestamptz"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "251a8d1df6c1a27aab6d38d3693f14e94da31409352b0ee30ae1575bf1c534d5": {
+    "query": "\n        UPDATE users SET name = $2, email= $3\n        WHERE id = $1\n        RETURNING *\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "email",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Varchar",
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "793f0df728d217c204123f12e4eafd6439db2d49d0cb506618ae9e780c7e0558": {
     "query": "\n    INSERT INTO subscriptions (id, email, name, subscribed_at)\n    VALUES ($1, $2, $3, $4)\n            ",
     "describe": {
@@ -13,6 +68,92 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "c1578a0b16e1561e3a43f9abb319b3b22fdcdbfb3f955032c15cb8b4e8e81baf": {
+    "query": "\n            SELECT id, name, email, created_at from users\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "email",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "c974d2c7dacdba63343a2e7b23d479e478426dd778848409529095b557e046b0": {
+    "query": "\n        DELETE from users\n        WHERE id = $1\n        ",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "e5133198a18af857542ee9448917a604a394f60171774c582ec407cd39857c12": {
+    "query": "\n        SELECT id, name, email, created_at\n        FROM users\n        WHERE id = $1\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "email",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "created_at",
+          "type_info": "Timestamptz"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ]
     }
   }
 }
