@@ -46,4 +46,25 @@ impl User {
         })?;
         Ok(rows)
     }
+    pub async fn get_user_by_id(db_pool: &PgPool, user_id: &str) -> Result<User, sqlx::Error> {
+        let rows = sqlx::query_as!(
+            User,
+            r#"
+        SELECT id, name, email, created_at
+        FROM users
+        WHERE id = $1
+        "#,
+        user_id
+        )
+        .fetch_one(db_pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to execute query: {:?}", e);
+            e
+            // Using the `?` operator to return early
+            // if the function failed, returning a sqlx::Error
+            // We will talk about error handling in depth later!
+        })?;
+        Ok(rows)
+    }
 }
