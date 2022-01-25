@@ -1,10 +1,10 @@
-use actix_web::{get, post, delete, web, HttpResponse, Responder};
+use actix_web::{get, post, put, delete, web, HttpResponse, Responder};
 use sqlx::{PgPool, FromRow, Row, Error, postgres::PgRow};
 use uuid::Uuid;
 use chrono::Utc;
-use crate::{models::user::User, constants};
+use crate::{models::user::User};
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct UserFormData {
     pub name: String,
     pub email: String,
@@ -40,6 +40,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(get_all_users);
     cfg.service(get_user);
     cfg.service(post_user);
+    cfg.service(update_user);
     cfg.service(delete_user_by_id);
 }
 
@@ -53,7 +54,7 @@ async fn get_all_users(pool: web::Data<PgPool>) -> impl Responder {
     }
 }
 
-#[tracing::instrument(name = "Getting a single users",skip(pool),fields(user_id = %user_id,))]
+#[tracing::instrument(name = "Getting a single user",skip(pool),fields(user_id = %user_id,))]
 #[get("/user/{id}")]
 async fn get_user(user_id: web::Path<String>, pool: web::Data<PgPool>) -> impl Responder {
     let user = User::get_user_by_id(&pool, &user_id).await;
@@ -63,6 +64,21 @@ async fn get_user(user_id: web::Path<String>, pool: web::Data<PgPool>) -> impl R
         Ok(user) => HttpResponse::Ok().json(user),
     }
 }
+#[tracing::instrument(name = "Updating a single user",skip(pool),fields(user_id = %user_id, user_name = %form.name,user_email = %form.email))]
+#[put("/user/{id}")]
+async fn update_user(
+    user_id: web::Path<String>, 
+    pool: web::Data<PgPool>,
+    form: web::Form<UserFormData>
+) -> impl Responder {
+    let user = User::update_user_by_id(&pool, &user_id, &form).await;
+
+    match user {
+        Err(_) => HttpResponse::NotFound().finish(),
+        Ok(user) => HttpResponse::Ok().json(user),
+    }
+}
+
 #[tracing::instrument(name = "Delete a single users",skip(pool),fields(user_id = %user_id,))]
 #[delete("/user/{id}")]
 async fn delete_user_by_id(
@@ -78,7 +94,7 @@ async fn delete_user_by_id(
     }
 }
 
-#[tracing::instrument(name = "Adding a new user",skip(form),fields(user_name = %form.name,user_email = %form.email,))]
+#[tracing::instrument(name = "Adding a new user",skip(form),fields(user_name = %form.name,user_email = %form.email))]
 #[post("/user")]
 async fn post_user(
     // web::Json<UserFormData> to test 
