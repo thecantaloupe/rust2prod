@@ -1,10 +1,12 @@
 use crate::routes::{health_check, subscribe};
-use super::controller;
+use super::{controller};
 use actix_web::{web, App, HttpServer};
 use actix_web::dev::Server;
 use tracing_actix_web::TracingLogger;
 use sqlx::PgPool;
 use std::net::TcpListener;
+
+
 
 // Notice the different signature!
 // We return `Server` on the happy path and we dropped the `async` keyword
@@ -19,10 +21,10 @@ pub fn run(
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
+            .configure(controller::init_user_controller)
             .route("/health_check", web::get().to(health_check))
             // A new entry in our routing table for POST /subscriptions requests
             .route("/subscriptions", web::post().to(subscribe))
-            .configure(controller::init_user_controller)
             // Register the connection as part of the application state
             .app_data(db_pool.clone())
     })

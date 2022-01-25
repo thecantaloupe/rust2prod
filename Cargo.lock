@@ -338,6 +338,7 @@ dependencies = [
  "libc",
  "num-integer",
  "num-traits 0.2.14",
+ "serde 1.0.133",
  "time 0.1.43",
  "winapi",
 ]
@@ -1465,6 +1466,8 @@ dependencies = [
  "secrecy",
  "serde 1.0.133",
  "serde-aux",
+ "serde_derive",
+ "serde_json",
  "sqlx",
  "tokio",
  "tracing",
