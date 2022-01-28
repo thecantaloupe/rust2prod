@@ -20,7 +20,8 @@ pub fn run(
     let db_pool = web::Data::new(db_pool);
     // transfer ownership of the AppState to the HttpServer via the `move`.
     let server = HttpServer::new(move || {
-        let cors = Cors::permissive();
+        let cors = Cors::permissive()
+            .allowed_origin("https://xenodochial-ardinghelli-436772.netlify.app/");
         App::new()
             .wrap(TracingLogger::default())
             .wrap(cors)
